@@ -111,6 +111,13 @@ tf_idf_filter <- c(
   "occupation", "occupied", "settler", "settlers"
 )
 
+tidy_titles <- news %>%
+  mutate(title = str_to_lower(title)) %>%  # Convert to lowercase
+  mutate(title = str_remove_all(title, "[^[:alnum:]\\s]")) %>%  # Remove punctuation
+  mutate(title = str_remove_all(title, "\\d+")) %>%  # Remove numbers
+  unnest_tokens(word, title) %>%  # Tokenize into words
+  anti_join(stop_words, by = "word")  # Remove stopwords
+
 tidy_titles2 <- tidy_titles %>%
   filter(word %in% tf_idf_filter)
 
